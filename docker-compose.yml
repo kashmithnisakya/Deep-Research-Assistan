@@ -10,5 +10,5 @@ services:
       - .:/app
       - ./app/data/vector_store:/app/app/data/vector_store
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - SERPER_API_KEY=${SERPER_API_KEY}
+      - openai_api_key=${openai_api_key}
+      - serper_api_key=${serper_api_key}
