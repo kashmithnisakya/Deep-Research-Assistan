@@ -3,6 +3,9 @@ from typing import Dict, Any, List
 from agents.research_agent import ResearchAgent
 from agents.tool_agent import ToolAgent
 from config.settings import Settings
+from typing import TypedDict
+from workflows.state import ResearchState
+
 
 class ResearchGraph:
     def __init__(self, settings: Settings):
@@ -12,7 +15,7 @@ class ResearchGraph:
         self.graph = self._build_graph()
 
     def _build_graph(self) -> StateGraph:
-        graph = StateGraph()
+        graph = StateGraph(state_schema=ResearchState)
 
         graph.add_node("research_agent", self.research_agent.plan_and_reason)
         graph.add_node("tool_agent", self.tool_agent.execute_tools)
@@ -26,5 +29,11 @@ class ResearchGraph:
         return graph.compile()
 
     def run(self, query: str) -> Dict[str, Any]:
-        state = {"query": query, "plan": [], "context": [], "sources": []}
+        state: ResearchState = {
+            "query": query,
+            "plan": [],
+            "context": [],
+            "sources": [],
+            "answer": ""
+        }
         return self.graph.invoke(state)

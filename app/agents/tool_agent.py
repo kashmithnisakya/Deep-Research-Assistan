@@ -2,6 +2,7 @@ from typing import Dict, Any
 from tools.web_search import WebSearchTool
 from tools.document_retriever import DocumentRetriever
 from config.settings import Settings
+from workflows.state import ResearchState
 
 class ToolAgent:
     def __init__(self, settings: Settings):
@@ -9,7 +10,7 @@ class ToolAgent:
         self.doc_retriever = DocumentRetriever(settings)
         self.settings = settings
 
-    def execute_tools(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    def execute_tools(self, state: ResearchState) -> ResearchState:
         plan = state["plan"]
         context = []
         sources = []
