@@ -47,10 +47,10 @@ def main():
     # Main form for query input
     with st.form(key="research_form"):
         query = st.text_area("Enter your question:", height=100)
-        logger.info(f"User query: {query}")
         submit_button = st.form_submit_button("Get Answer")
 
     if submit_button and query:
+        logger.info(f"User query: {query}")
         with st.spinner("Researching..."):
             try:
                 result = research_graph.run(query)
