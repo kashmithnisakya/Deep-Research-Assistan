@@ -5,7 +5,7 @@ import os
 class Settings(BaseSettings):
     openai_api_key: str
     serper_api_key: str
-    llm_model: str = "gpt-4o-mini"
+    llm_model: str = "gpt-4.1"
     vector_store_path: str = os.path.join(os.path.dirname(__file__), "../data/vector_store")
 
     class Config:

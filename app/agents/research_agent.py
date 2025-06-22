@@ -3,6 +3,7 @@ from langchain_openai import ChatOpenAI
 from config.settings import Settings
 from workflows.state import ResearchState
 import json
+import tiktoken
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,6 +16,58 @@ class ResearchAgent:
             temperature=0.7
         )
         self.settings = settings
+        try:
+            self.encoding = tiktoken.encoding_for_model(settings.llm_model)
+        except KeyError:
+            print(f"Warning: No tokenizer found for model '{settings.llm_model}'. Falling back to 'cl100k_base'.")
+            self.encoding = tiktoken.get_encoding("cl100k_base")  # Fallback tokenizer
+        self.max_tokens = 900000  # Safe limit for context window
+
+    def _truncate_text(self, text: str, max_tokens: int) -> str:
+        """Truncate text to fit within max_tokens."""
+        tokens = self.encoding.encode(text)
+        if len(tokens) > max_tokens:
+            tokens = tokens[:max_tokens]
+            text = self.encoding.decode(tokens)
+            text = text[:text.rfind(" ")] + "..."  # Avoid cutting mid-word
+        return text
+
+    def _truncate_context_and_sources(self, context: List[str], sources: List[str], max_tokens: int) -> tuple[List[str], List[str]]:
+        """Truncate context and sources to fit within max_tokens."""
+        total_tokens = sum(len(self.encoding.encode(item)) for item in context + sources)
+        if total_tokens <= max_tokens:
+            return context, sources
+
+        # Allocate half to context, half to sources
+        context_max = max_tokens // 2
+        sources_max = max_tokens - context_max
+        context_tokens = 0
+        new_context = []
+        for item in context:
+            item_tokens = len(self.encoding.encode(item))
+            if context_tokens + item_tokens <= context_max:
+                new_context.append(item)
+                context_tokens += item_tokens
+            else:
+                remaining = context_max - context_tokens
+                if remaining > 0:
+                    new_context.append(self._truncate_text(item, remaining))
+                break
+
+        sources_tokens = 0
+        new_sources = []
+        for item in sources:
+            item_tokens = len(self.encoding.encode(item))
+            if sources_tokens + item_tokens <= sources_max:
+                new_sources.append(item)
+                sources_tokens += item_tokens
+            else:
+                remaining = sources_max - sources_tokens
+                if remaining > 0:
+                    new_sources.append(self._truncate_text(item, remaining))
+                break
+
+        return new_context, new_sources
 
     def plan_and_reason(self, state: ResearchState) -> ResearchState:
         logger.info(f"Planning for query: {state['query']}")
