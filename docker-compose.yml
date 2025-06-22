@@ -8,6 +8,7 @@ services:
       - "8501:8501"
     volumes:
       - .:/app
+      - ./app/data/vector_store:/app/app/data/vector_store
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - SERPER_API_KEY=${SERPER_API_KEY}

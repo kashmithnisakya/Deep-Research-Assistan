@@ -16,12 +16,15 @@
    OPENAI_API_KEY=your_openai_api_key
    SERPER_API_KEY=your_serper_api_key
    ```
-3. Build and run with Docker Compose:
+3. nstall dependencies (if running locally):
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Build and run with Docker Compose:
     ```bash
     docker-compose up --build
     ```
-4. Access the application:
+5. Access the application:
    Open your browser and go to `http://localhost:8501`.
 ## Note 
-* Ensure the vector store (data/vector_store) is pre-populated with documents for retrieval.
 * Run tests with pytest tests/.

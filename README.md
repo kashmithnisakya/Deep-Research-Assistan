@@ -10,6 +10,11 @@ A production-grade agentic application for answering analytical questions using 
 - Unit tests and comprehensive documentation
 
 ## Setup
+## Setup
+1. Clone the repository and navigate to the project directory.
+2. Create a `.env` file with your OpenAI and Serper API keys.
+3. Start the application with `docker-compose up --build`.
+4. Access at `http://localhost:8501`.
 See [docs/setup.md](docs/setup.md) for instructions.
 
 ## Usage
