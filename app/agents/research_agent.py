@@ -36,12 +36,12 @@ class ResearchAgent:
 
         **Example**:
         For query: "What are the latest advancements in renewable energy?"
-        {
+        {{
             "plan": [
                 "web_search: Search for recent articles and news on renewable energy advancements",
                 "document_retrieval: Retrieve studies or reports from the document store on renewable energy"
             ]
-        }
+        }}
 
         **Your Task**:
         Create a JSON plan for the query: "{state['query']}"
